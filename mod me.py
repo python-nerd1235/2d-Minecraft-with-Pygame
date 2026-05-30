@@ -1,5 +1,7 @@
 # A simple Minecraft-like game using Pygame
+# version 0.1
 import pygame
+import json
 pygame.init()
 text_font = pygame.font.SysFont('Arial', 20)
 hp=10
@@ -10,6 +12,14 @@ log=''
 win = pygame.display.set_mode((500, 500))
 direction = 1
 blocks = []
+try:
+    with open('blocks.json', 'r') as f:
+        blocks = json.load(f)
+        for i in range(0, len(blocks), 2):
+            if isinstance(blocks[i], list):
+                blocks[i] = tuple(blocks[i])
+except FileNotFoundError:
+    blocks = []
 types=[(0, 255, 0)]
 typeponter = 0
 lenoftypes = len(types)
@@ -99,4 +109,6 @@ if died:
     win.blit(text, (200, 200))
     pygame.display.update()
     pygame.time.wait(2000)
+with open('blocks.json', 'w') as f:
+    json.dump(blocks, f)
 pygame.quit()
