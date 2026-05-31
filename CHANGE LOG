@@ -8,3 +8,5 @@ Added saveing.
 
 0.3
 Updated save/loading so that your position and direction are saved. Also fixed bug where you could stack blocks.
+PATCH 0.3_A
+Fix save bricking if you die.
