@@ -1,5 +1,5 @@
 # A simple Minecraft-like game using Pygame
-# version 0.3
+# version 0.3_A
 import pygame
 import json
 pygame.init()
@@ -121,6 +121,7 @@ while running:
     pygame.time.Clock().tick(30)
 print("Thanks for playing!")
 if died:
+    hp=10
     win.fill((0, 0, 0))
     text = text_font.render("You died!", True, (255, 0, 0))
     win.blit(text, (200, 200))
