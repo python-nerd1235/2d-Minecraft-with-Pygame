@@ -1,5 +1,5 @@
 # A simple Minecraft-like game using Pygame
-# version 0.2
+# version 0.3
 import pygame
 import json
 pygame.init()
@@ -14,12 +14,27 @@ direction = 1
 blocks = []
 try:
     with open('blocks.json', 'r') as f:
-        blocks = json.load(f)
-        for i in range(0, len(blocks), 2):
-            if isinstance(blocks[i], list):
-                blocks[i] = tuple(blocks[i])
+        data = json.load(f)
+        print(data)
+        if isinstance(data, list):
+            data = data[0]
+        try:
+            blocks = data['b']
+            x = data['X']
+            y = data['Y']
+            hp = data['HP']
+            direction = data['d']
+        except KeyError:
+            blocks = []
+            x = 0
+            y = 0
+            hp = 10
+            print("Invalid data format in blocks.json. Starting with default values.")
+            json.dump({"b": blocks, "X": x, "Y": y, "HP": hp}, open('blocks.json', 'w'))
 except FileNotFoundError:
     blocks = []
+    with open('blocks.json', 'w') as f:
+       json.dump({"b": blocks, "X": x, "Y": y, "HP": hp, "dir": direction}, f)
 types=[(0, 255, 0)]
 typeponter = 0
 lenoftypes = len(types)
@@ -63,6 +78,8 @@ while running:
                 if y < 400 and (x,y+50) not in blocks:
                     y += 50
                 direction = 3
+            elif event.key == pygame.K_d:
+                hp -= 1
             elif event.key == pygame.K_c:
                 direction = (direction + 1) % 4
             if event.key == pygame.K_x:       #where the player can remove blocks
@@ -83,16 +100,16 @@ while running:
                     blocks.pop(idx+1)
                     blocks.pop(idx)
             if event.key == pygame.K_z:
-                if direction == 0:      #where the player can place blocks
+                if direction == 0 and (x - 50, y) not in blocks:      #where the player can place blocks
                     blocks.append((x - 50, y))
                     blocks.append(typeponter)
-                elif direction == 1:
+                elif direction == 1 and (x + 50, y) not in blocks:
                     blocks.append((x + 50, y))
                     blocks.append(typeponter)
-                elif direction == 2:
+                elif direction == 2 and (x, y - 50) not in blocks:
                     blocks.append((x, y - 50))
                     blocks.append(typeponter)
-                elif direction == 3:
+                elif direction == 3 and (x, y + 50) not in blocks:
                     blocks.append((x, y + 50))
                     blocks.append(typeponter)
             if event.key == pygame.K_SPACE:
@@ -110,5 +127,12 @@ if died:
     pygame.display.update()
     pygame.time.wait(2000)
 with open('blocks.json', 'w') as f:
-    json.dump(blocks, f)
+    data = {
+        "b": blocks,
+        'X':x,
+        'Y':y,
+        'HP':hp,
+        'd':direction
+    }
+    json.dump(data, f)
 pygame.quit()
