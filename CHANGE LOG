@@ -20,3 +20,5 @@ PATCH 0.5_A
 Fixed bug where missing_texture.png was not rendening right.
 PATCH 0.5_B
 added a new saving value, for finding textures. 
+PATCH 0.5_C
+fixed world saveing/loading bug where all data STILL goes to blocks.json. 
