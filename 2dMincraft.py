@@ -1,5 +1,5 @@
 # A simple Minecraft-like game using Pygame
-# version 0.5_A with lancher.
+# version 0.5_B with lancher.
 import json
 import time
 world=input('Enter filename: ') + '.json'
@@ -67,6 +67,8 @@ try:
             direction = data['d']
             pointer_couler= data['pc']
             correct_format = data['correct_format']
+            try:types_textures= data['tc']
+            except:types_textures=['grass.png']
             if correct_format != ' 123ABC LOL IS THIS CORRECT?':
                 raise KeyError
         except KeyError:
