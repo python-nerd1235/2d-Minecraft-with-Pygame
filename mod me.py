@@ -1,5 +1,5 @@
 # A simple Minecraft-like game using Pygame
-# version 0.4
+# version 0.5 Texture update!
 import pygame
 import json
 import time
@@ -11,10 +11,27 @@ x=0
 y=0
 log=''
 types=[(0, 255, 0)]
+types_texures = ['grass.png']
+loaded_textures = []
+types_text=['Grass']
 win = pygame.display.set_mode((500, 500))
 direction = 1
+for i in types_texures:
+    try:
+        img = pygame.image.load(i)
+        loaded_textures.append(img)
+    except:
+        loaded_textures.append('missing_texture.png')
 blocks = []
 blobks_types = []
+running = True
+try:player_img = pygame.image.load('player.png')
+except:
+    text = text_font.render("Error: player.png not found.", True, (255, 0, 0))
+    win.blit(text, (5, 200))
+    pygame.display.update()
+    time.sleep(5)
+    running=False
 try:
     with open('blocks.json', 'r') as f:
         data = json.load(f)
@@ -22,7 +39,9 @@ try:
         if isinstance(data, list):
             data = data[0]
         try:
-            blocks = data['b']
+            a = data['b']
+            for i in a:
+                blocks.append((i[0], i[1]))
             x = data['X']
             y = data['Y']
             hp = data['HP']
@@ -56,15 +75,16 @@ typeponter = 0
 lenoftypes = len(types)
 lix,liy=0,0
 odd=True
-running = True
 while running:
     odd=True
     win.fill((0, 0, 0))
-    pygame.draw.rect(win, (255, 255, 0), (x, y, 50, 50))
+    win.blit(player_img, (x, y))
     pygame.draw.rect(win, (255, 255, 255), (0, 450, 500, 50))
     pygame.draw.rect(win, types[typeponter], (0, 470, 20, 20))
     text=text_font.render(f'HP: {hp}', True, (0, 0, 255))
+    text2=text_font.render(f'Block type: {types_text[typeponter]}', True, (0, 0, 255))
     win.blit(text, (30, 470))
+    win.blit(text2, (100, 470))
     if direction == 0:lix,liy=x-50,y
     elif direction == 2:lix,liy=x,y-50
     elif direction == 1:lix,liy=x+50,y
@@ -72,7 +92,7 @@ while running:
     pygame.draw.line(win, types[typeponter], (x+25, y+25), (lix+25, liy+25), 2)
     p=0
     for block in blocks:
-        pygame.draw.rect(win, blobks_types[p], (block[0], block[1], 50, 50))
+        win.blit(loaded_textures[types.index(blobks_types[p])], block)
         p+=1
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
