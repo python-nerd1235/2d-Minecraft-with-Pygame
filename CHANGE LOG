@@ -18,3 +18,5 @@ Added errors on the window, so nothing prints in the terminal. Also fixed bugy t
 ADDED TEXTURES! NO MORE LOOKING AT BORING SQUARES! 
 PATCH 0.5_A
 Fixed bug where missing_texture.png was not rendening right.
+PATCH 0.5_B
+added a new saving value, for finding textures. 
