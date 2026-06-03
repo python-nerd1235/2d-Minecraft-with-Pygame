@@ -1,5 +1,5 @@
 # A simple Minecraft-like game using Pygame
-# version 0.5_B with lancher.
+# version 0.5_C with lancher.
 import json
 import time
 world=input('Enter filename: ') + '.json'
@@ -28,7 +28,7 @@ x=0
 y=0
 log=''
 types=['grass']
-types_textures = ['gras.png']
+types_textures = ['grass.png']
 loaded_textures = []
 pointer_couler=[(0,255,0)]
 win = pygame.display.set_mode((500, 500))
@@ -85,7 +85,7 @@ try:
 except FileNotFoundError:
     blocks = []
     blobks_types = []
-    with open('blocks.json', 'w') as f:
+    with open(world, 'w') as f:
         text = text_font.render("No blocks.json found. Starting with default values.", True, (255, 0, 0))
         win.blit(text, (5, 200))
         pygame.display.update()
@@ -187,7 +187,7 @@ if died:
     win.blit(text, (200, 200))
     pygame.display.update()
     pygame.time.wait(2000)
-with open('blocks.json', 'w') as f:
+with open(world, 'w') as f:
     data = {
         "b": blocks,
         "bt": blobks_types,
