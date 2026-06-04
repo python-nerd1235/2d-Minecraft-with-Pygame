@@ -1,4 +1,3 @@
-
 Anyone who wants to mod this game, please do, it's boring right now. 
 
 Added errors in the window, and fixed bugs. See CHANGE LOG for details.
@@ -14,11 +13,16 @@ Space: change block(On an un-moded game, this douse nill)
 
 How to use the lancher:
 
-Yype in the name of the world that you whant to play, and press enter.
+Type in the name of the world that you whant to play, and press enter.
 You can also type "LAST" to play your last played world.
+
+Moding:
+
+Use this program:
+https://github.com/python-nerd1235/2d-Mincraft-moder
 
 HAVE FUN!   
 :)
 
 
-2d mincraft ver 0.5_A
+2d mincraft ver 0.6
