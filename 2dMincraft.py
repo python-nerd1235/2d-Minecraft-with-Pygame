@@ -1,6 +1,8 @@
 # A simple Minecraft-like game using Pygame
-# version 0.5_C with lancher.
+# version 0.6 with lancher.
+#lancher version 0.2
 import json
+import os
 import time
 world=input('Enter filename: ') + '.json'
 running = True
@@ -10,15 +12,7 @@ if world == 'LAST.json':
             world=json.load(f)['world']
     except FileNotFoundError:
         with open('LASTPLAYD.json', 'w') as f:
-            json.dump({"world": world[:-5]}, f)
-else:
-    try:
-        with open('LASTPLAYD.json', 'w') as f:
-            json.dump({"world": world[:-5]}, f)
-    except:
-        running=False
-        print("Error: Could not save last played world.")
-        time.sleep(5)
+            json.dump({"world": world}, f)
 import pygame
 pygame.init()
 text_font = pygame.font.SysFont('Arial', 15)
@@ -33,16 +27,51 @@ loaded_textures = []
 pointer_couler=[(0,255,0)]
 win = pygame.display.set_mode((500, 500))
 direction = 1
-missing_texture = pygame.image.load('missing_texture.png')
-for i in types_textures:
-    try:
-        img = pygame.image.load(i).convert_alpha()
-        loaded_textures.append(img)
-    except:
-        loaded_textures.append(missing_texture.copy())
+texture_dir = 'GAME_TEXTURES'
+save_dir='SAVES'
+def get_texture_path(filename):
+    path = os.path.join(texture_dir, filename)
+    if os.path.isfile(path):
+        return path
+    return filename
+missing_texture = None
+def load_textures():
+    global missing_texture
+    loaded_textures.clear()
+    missing_texture = pygame.image.load(get_texture_path('missing_texture.png')).convert_alpha()
+    for i in types_textures:
+        try:
+            img = pygame.image.load(get_texture_path(i)).convert_alpha()
+            loaded_textures.append(img)
+        except Exception:
+            loaded_textures.append(missing_texture.copy())
+def normalize_pointer_colors(pc, default_length=1):
+    if isinstance(pc, dict):
+        if all(str(key).isdigit() for key in pc.keys()):
+            ordered = []
+            for i in range(max(int(key) for key in pc.keys()) + 1):
+                value = pc.get(str(i), pc.get(i))
+                if isinstance(value, (list, tuple)) and len(value) == 3:
+                    ordered.append(tuple(value))
+                else:
+                    ordered.append((0, 255, 0))
+            return ordered
+        pc = list(pc.values())
+    if isinstance(pc, tuple):
+        pc = [pc]
+    if isinstance(pc, list):
+        normalized = []
+        for item in pc:
+            if isinstance(item, (list, tuple)) and len(item) == 3:
+                normalized.append(tuple(item))
+        if normalized:
+            return normalized
+    return [(0, 255, 0)] * max(default_length, 1)
+load_textures()
 blocks = []
 blobks_types = []
-try:player_img = pygame.image.load('player.png')
+try:
+    player_img = pygame.image.load(get_texture_path('player.png'))
 except:
     text = text_font.render("Error: player.png not found.", True, (255, 0, 0))
     win.blit(text, (5, 200))
@@ -67,8 +96,13 @@ try:
             direction = data['d']
             pointer_couler= data['pc']
             correct_format = data['correct_format']
-            try:types_textures= data['tc']
-            except:types_textures=['grass.png']
+            try:
+                types_textures = data['tc']
+            except:
+                types_textures = ['grass.png']
+            pointer_couler = normalize_pointer_colors(data.get('pc', pointer_couler), len(types))
+            lenoftypes = len(types)
+            load_textures()
             if correct_format != ' 123ABC LOL IS THIS CORRECT?':
                 raise KeyError
         except KeyError:
@@ -90,7 +124,7 @@ except FileNotFoundError:
         win.blit(text, (5, 200))
         pygame.display.update()
         time.sleep(5)
-        json.dump({"b": blocks, "bt": blobks_types, "ty": [(0, 255, 0)], "X": x, "Y": y, "HP": hp, "d": direction, "correct_format": " 123ABC LOL IS THIS CORRECT?"}, f)
+        json.dump({"b": blocks, "bt": blobks_types, "ty": types, "pc": pointer_couler, "X": x, "Y": y, "HP": hp, "d": direction, "correct_format": " 123ABC LOL IS THIS CORRECT?"}, f)
 typeponter = 0
 lenoftypes = len(types)
 lix,liy=0,0
@@ -172,7 +206,7 @@ while running:
                 elif direction == 3 and (x, y + 50) not in blocks:
                     blocks.append((x, y + 50))
                     blobks_types.append(types[typeponter])
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_v:
                 typeponter = (typeponter + 1) % lenoftypes
     if hp <= 0:
         died=True
@@ -197,6 +231,7 @@ with open(world, 'w') as f:
         'Y':y,
         'HP':hp,
         'd':direction,
+        'tc':types_textures,
         'correct_format': ' 123ABC LOL IS THIS CORRECT?'
     }
     json.dump(data, f)
