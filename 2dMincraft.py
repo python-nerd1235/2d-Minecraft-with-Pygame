@@ -1,5 +1,5 @@
 # A simple Minecraft-like game using Pygame
-# version 0.6 with lancher.
+# version 1.0 with lancher. No new features will be added.
 #lancher version 0.2
 import json
 import os
@@ -15,16 +15,17 @@ if world == 'LAST.json':
             json.dump({"world": world}, f)
 import pygame
 pygame.init()
+pygame.mixer.init()
 text_font = pygame.font.SysFont('Arial', 15)
 hp=10
 died=False
 x=0
 y=0
 log=''
-types=['grass']
-types_textures = ['grass.png']
+types=['grass','wood','planks']
+types_textures = ['grass.png','wood.png','planks.png']
 loaded_textures = []
-pointer_couler=[(0,255,0)]
+pointer_couler=[(0,255,0),(150, 75, 0),(166, 123, 91)]
 win = pygame.display.set_mode((500, 500))
 direction = 1
 texture_dir = 'GAME_TEXTURES'
@@ -44,7 +45,7 @@ def load_textures():
             img = pygame.image.load(get_texture_path(i)).convert_alpha()
             loaded_textures.append(img)
         except Exception:
-            loaded_textures.append(missing_texture.copy())
+            loaded_textures.append(missing_texture.copy())  
 def normalize_pointer_colors(pc, default_length=1):
     if isinstance(pc, dict):
         if all(str(key).isdigit() for key in pc.keys()):
@@ -133,6 +134,7 @@ while running:
     odd=True
     win.fill((0, 0, 0))
     win.blit(player_img, (x, y))
+    walk_on=False
     pygame.draw.rect(win, (255, 255, 255), (0, 450, 500, 50))
     pygame.draw.rect(win, pointer_couler[typeponter], (0, 470, 20, 20))
     text=text_font.render(f'HP: {hp}', True, (0, 0, 255))
@@ -159,18 +161,22 @@ while running:
             if event.key == pygame.K_LEFT:
                 if x > 0 and (x-50,y) not in blocks:
                     x -= 50
+                    walk_on=True
                 direction = 0
             elif event.key == pygame.K_RIGHT:
                 if x < 450 and (x+50,y) not in blocks:
                     x += 50
+                    walk_on=True
                 direction = 1
             elif event.key == pygame.K_UP:
                 if y > 0 and (x,y-50) not in blocks:
                     y -= 50
+                    walk_on=True
                 direction = 2
             elif event.key == pygame.K_DOWN:
                 if y < 400 and (x,y+50) not in blocks:
                     y += 50
+                    walk_on=True
                 direction = 3
             elif event.key == pygame.K_d:
                 hp -= 1
