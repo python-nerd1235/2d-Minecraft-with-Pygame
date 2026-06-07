@@ -1,7 +1,8 @@
-Anyone who wants to mod this game, please do, it's boring right now. 
+Anyone who wants to mod this game, please do.
 
 Fixed bugs. See CHANGE LOG for details.
-Starting to test survival!  :)
+This is the last non-patch version. now thee number after the 1.x is a patch number.
+This was a fun project, but I ran out of gas (ideas), and it was geting boring.
 
 Controls. 
 
@@ -9,7 +10,7 @@ Arrow keys:move
 Z:place
 X:remove
 C:Change direction(You point in the direction you move)
-Space: change block(On an un-moded game, this douse nill)
+V: change block type.
 
 How to use the lancher:
 
@@ -25,4 +26,4 @@ HAVE FUN!
 :)
 
 
-2d mincraft ver 0.6
+2d mincraft ver 1.0
