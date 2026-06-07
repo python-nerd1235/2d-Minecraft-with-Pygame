@@ -25,3 +25,8 @@ fixed world saveing/loading bug where all data STILL goes to blocks.json.
 
 0.6 
 Updated game to fix lancher. and added a texture folder to keep organized.
+
+-------------------------------------------------------------------------------------------
+
+1.0 
+Made textures easy to get.
