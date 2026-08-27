@@ -1,9 +1,10 @@
 # A simple Minecraft-like game using Pygame
-# version 1.0 with lancher. No new features will be added.
+# version 1.1 with lancher. No new features will be added.
 #lancher version 0.2
 import json
 import os
 import time
+os.chdir(os.path.dirname(__file__))
 world=input('Enter filename: ') + '.json'
 running = True
 if world == 'LAST.json':
